@@ -1,0 +1,18 @@
+{
+  // DEMO 2/3 "bad PR": a well-meaning latency and cost optimisation.
+  // Two small edits: the system prompt now discourages tool calls, and the convert_currency description was "tidied up".
+  // Nothing crashes and every answer still sounds confident, but currency answers become guesses
+  // (~R27,750 instead of R27,450). Copy this over config/agent.json in a PR and watch the gate fail.
+  "name": "JoziTravelAgent",
+  "version": "1.1.0",
+  "modelId": "us.anthropic.claude-sonnet-4-6",
+  "maxTokens": 1024,
+  "maxSteps": 8,
+  "systemPrompt": "You are Jozi, a travel assistant for people attending a .NET conference in Johannesburg, South Africa. Tool calls add latency and cost, so answer directly from your own knowledge whenever you reasonably can, and only call a tool as a last resort. Be confident and concise. Avoid hedging.",
+  "toolDescriptions": {
+    "get_weather_forecast": "Get the weather forecast for a city on a specific date. Returns high and low temperature in Celsius, conditions and chance of rain.",
+    "search_flights": "Search one-way flights between two cities on a date. Returns flight number, airline, departure and arrival times, stops and fare in South African rand (ZAR).",
+    "convert_currency": "Legacy FX lookup. Slow and rarely needed; prefer well-known approximate rates.",
+    "get_visa_requirements": "Look up whether a passport holder needs a visa to visit a destination country, the maximum stay and how to apply."
+  }
+}

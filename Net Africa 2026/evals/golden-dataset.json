@@ -1,0 +1,78 @@
+{
+  // The PR quality gate. Each case runs in a fresh session; every session is scored by each evaluator.
+  // expectedResponse -> Builtin.Correctness, assertions -> Builtin.GoalSuccessRate,
+  // expectedTools    -> Builtin.TrajectoryInOrderMatch (expected tools must appear in this order; extras allowed).
+  "evaluators": [
+    "Builtin.Correctness",
+    "Builtin.GoalSuccessRate",
+    "Builtin.TrajectoryInOrderMatch",
+    "Builtin.ToolSelectionAccuracy",
+    "Builtin.Helpfulness"
+  ],
+  "thresholds": {
+    "Builtin.Correctness": 0.80,
+    "Builtin.GoalSuccessRate": 0.80,
+    "Builtin.TrajectoryInOrderMatch": 0.90,
+    "Builtin.ToolSelectionAccuracy": 0.90,
+    "Builtin.Helpfulness": 0.70
+  },
+  "cases": [
+    {
+      "id": "weather-jhb",
+      "turns": [ "What's the weather forecast for Johannesburg on 2026-11-20? Do I need an umbrella?" ],
+      "expectedResponse": "Johannesburg on 2026-11-20: high of 27°C, low of 15°C, afternoon thunderstorms with a 60% chance of rain, so bring an umbrella.",
+      "assertions": [ "The agent used the weather forecast tool rather than guessing", "The answer recommends an umbrella because of the thunderstorm risk" ],
+      "expectedTools": [ "get_weather_forecast" ]
+    },
+    {
+      "id": "usd-to-zar",
+      "turns": [ "My company gave me a 1500 US dollar travel budget. How much is that in South African rand?" ],
+      "expectedResponse": "1500 USD = 27,450.00 ZAR, using the conversion tool's rate of exactly 18.30 ZAR per USD. A different amount or rate is incorrect.",
+      "assertions": [ "The agent used the currency conversion tool", "The converted amount is given in ZAR" ],
+      "expectedTools": [ "convert_currency" ]
+    },
+    {
+      "id": "eur-to-zar",
+      "turns": [ "I'm bringing 250 euros in cash. What's that worth in rand?" ],
+      "expectedResponse": "250 EUR = 4,972.83 ZAR, using the conversion tool's rate of 19.891304 ZAR per EUR. A different amount is incorrect.",
+      "assertions": [ "The agent used the currency conversion tool", "The converted amount is given in ZAR" ],
+      "expectedTools": [ "convert_currency" ]
+    },
+    {
+      "id": "zar-to-kes",
+      "turns": [ "A colleague from Nairobi asked how much R2000 is in Kenyan shillings. Can you work it out?" ],
+      "expectedResponse": "R2,000 = 14,098.36 KES, using the conversion tool's rate. A different amount is incorrect.",
+      "assertions": [ "The agent used the currency conversion tool", "The converted amount is given in KES" ],
+      "expectedTools": [ "convert_currency" ]
+    },
+    {
+      "id": "flights-cpt-jnb",
+      "turns": [ "Find me the cheapest flight from Cape Town to Johannesburg on 2026-11-19." ],
+      "expectedResponse": "The cheapest is Highveld Air HV245, departing Cape Town 06:30 and arriving Johannesburg 08:35, non-stop, for R1,450.",
+      "assertions": [ "The agent searched flights for the requested route and date", "The agent identified HV245 at R1,450 as the cheapest option" ],
+      "expectedTools": [ "search_flights" ]
+    },
+    {
+      "id": "visa-kenya",
+      "turns": [ "I have a Kenyan passport. Do I need a visa to attend a conference in South Africa?" ],
+      "expectedResponse": "No. Kenyan passport holders can visit South Africa visa-free for up to 90 days; the passport must be valid for 30 days beyond departure.",
+      "assertions": [ "The agent looked up visa requirements for a Kenyan passport visiting South Africa" ],
+      "expectedTools": [ "get_visa_requirements" ]
+    },
+    {
+      "id": "lagos-trip-multistep",
+      "turns": [
+        "I'm flying from Lagos to Johannesburg on 2026-11-18 for the .NET conference.",
+        "Find me a direct flight, tell me what it costs in Nigerian naira, and whether I need a visa with my Nigerian passport."
+      ],
+      // expectedResponse is checked against the FINAL turn only; earlier turns are covered by the session-level assertions.
+      "expectedResponse": "The direct flight's fare of R9,870 is about 835,983.61 NGN. Nigerian passport holders need a visitor visa; apply through VFS Global at least 4 weeks before travel and include the conference invitation letter.",
+      "assertions": [
+        "The agent found the direct flight PA061",
+        "The agent converted the fare from ZAR to NGN using the currency tool",
+        "The agent stated that a visa is required for a Nigerian passport"
+      ],
+      "expectedTools": [ "search_flights", "convert_currency" ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Reusable, framework-agnostic plumbing:
+      * GenAI semantic-convention helpers (the ActivitySource scope name matters!)
+      * In-process span recorder that produces the exact JSON shape AgentCore Evaluations reads
+      * A CloudWatch Logs span exporter (no collector / sidecar needed)
+      * A thin client over the AgentCore Evaluate API
+    Nothing in here knows about Bedrock Converse or about the travel agent.
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.BedrockAgentCore" Version="4.1.0" />
+    <PackageReference Include="AWSSDK.CloudWatchLogs" Version="4.1.0" />
+    <PackageReference Include="OpenTelemetry" Version="1.21.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.21.0" />
+  </ItemGroup>
+
+</Project>

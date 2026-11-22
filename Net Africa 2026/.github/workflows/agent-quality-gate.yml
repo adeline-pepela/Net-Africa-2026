@@ -1,0 +1,61 @@
+# DEMO 2 — fail the pull request when agent quality drops.
+#
+# Runs the golden dataset against the agent config in the PR, scores every session with
+# Amazon Bedrock AgentCore Evaluations, posts the scorecard on the PR and fails the check below threshold.
+# Make this check "required" in branch protection and a bad prompt can't be merged.
+#
+# Setup (once): run infra/setup-github-oidc.sh <owner/repo> and set the repo variable AWS_EVAL_ROLE_ARN.
+
+name: Agent quality gate
+
+on:
+  pull_request:
+    paths:
+      - "config/**"
+      - "src/**"
+      - "evals/**"
+  workflow_dispatch:
+
+permissions:
+  id-token: write       # OIDC to AWS, no long-lived keys
+  contents: read
+  pull-requests: write  # post the scorecard comment
+
+concurrency:
+  group: agent-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_EVAL_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Build
+        run: dotnet build src/Jozi.TravelAgent.Evals -c Release
+
+      - name: Score the agent with AgentCore Evaluations
+        id: gate
+        run: >
+          dotnet run --project src/Jozi.TravelAgent.Evals -c Release --no-build --
+          gate
+          --config config/agent.json
+          --dataset evals/golden-dataset.json
+          --report eval-report.md
+
+      - name: Post scorecard on the PR
+        if: always() && github.event_name == 'pull_request' && hashFiles('eval-report.md') != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: agent-quality-gate
+          path: eval-report.md

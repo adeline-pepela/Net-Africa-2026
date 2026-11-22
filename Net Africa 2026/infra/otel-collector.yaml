@@ -1,0 +1,44 @@
+# Production alternative to CloudWatchLogsSpanExporter: send spans with the standard .NET OTLP exporter
+# to an AWS Distro for OpenTelemetry (ADOT) collector, which SigV4-signs them to the CloudWatch OTLP endpoint.
+# Spans then also appear in the CloudWatch GenAI Observability dashboard (requires Transaction Search).
+#
+#   docker run --rm -p 4318:4318 -v $PWD/infra/otel-collector.yaml:/etc/otel.yaml \
+#     -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
+#     public.ecr.aws/aws-observability/aws-otel-collector:latest --config /etc/otel.yaml
+#
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf \
+#     dotnet run --project src/Jozi.TravelAgent.Chat -- --export otlp
+#
+# The x-aws-log-group header delivers spans to your own log group ("unified telemetry"), which needs a CloudWatch Logs
+# resource policy allowing xray.amazonaws.com to PutLogEvents. Remove the headers to use the shared aws/spans log group.
+
+extensions:
+  sigv4auth:
+    region: us-east-1
+    service: xray
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch: {}
+
+exporters:
+  otlphttp/cloudwatch:
+    traces_endpoint: https://xray.us-east-1.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth
+    headers:
+      x-aws-log-group: /aws/bedrock-agentcore/evals-demo/dotnet-travel-agent
+      x-aws-log-stream: spans
+
+service:
+  extensions: [sigv4auth]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/cloudwatch]

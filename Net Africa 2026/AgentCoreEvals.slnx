@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AgentCore.Evaluations.Otel/AgentCore.Evaluations.Otel.csproj" />
+    <Project Path="src/Jozi.TravelAgent/Jozi.TravelAgent.csproj" />
+    <Project Path="src/Jozi.TravelAgent.Chat/Jozi.TravelAgent.Chat.csproj" />
+    <Project Path="src/Jozi.TravelAgent.Evals/Jozi.TravelAgent.Evals.csproj" />
+  </Folder>
+</Solution>

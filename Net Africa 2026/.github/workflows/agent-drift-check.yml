@@ -1,0 +1,36 @@
+# DEMO 3 (optional) — scheduled drift check over online-evaluation results.
+# Fails (and notifies watchers) when production scores drop versus the previous 24 hours.
+# For paging, prefer the CloudWatch alarm created by infra/setup-online-eval.sh; this job is the human-readable report.
+
+name: Agent drift check
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # hourly
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_EVAL_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+      - name: Compare the last hour with the previous 24 hours
+        run: >
+          dotnet run --project src/Jozi.TravelAgent.Evals -c Release --
+          drift
+          --results-log-group "${{ vars.ONLINE_EVAL_RESULTS_LOG_GROUP }}"
+          --recent-minutes 60
+          --baseline-hours 24
+          --max-drop 0.15

@@ -1,0 +1,58 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "QueryHelpers",
+      "Effect": "Allow",
+      "Action": ["cloudwatch:GenerateQuery", "cloudwatch:GenerateQueryResultsSummary", "logs:DescribeLogGroups"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadAgentSpans",
+      "Effect": "Allow",
+      "Action": ["logs:DescribeLogStreams", "logs:StartQuery", "logs:GetQueryResults", "logs:StopQuery", "logs:FilterLogEvents", "logs:GetLogEvents"],
+      "Resource": [
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:{{LOG_GROUP}}",
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:{{LOG_GROUP}}:*",
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:aws/spans",
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:aws/spans:*"
+      ]
+    },
+    {
+      "Sid": "SessionIndexForDiscovery",
+      "Effect": "Allow",
+      "Action": ["logs:DescribeIndexPolicies", "logs:PutIndexPolicy"],
+      "Resource": [
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:{{LOG_GROUP}}",
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:aws/spans"
+      ]
+    },
+    {
+      "Sid": "WriteEvaluationResults",
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"],
+      "Resource": [
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:/aws/bedrock-agentcore/evaluations/*",
+        "arn:aws:logs:{{REGION}}:{{ACCOUNT}}:log-group:/aws/bedrock-agentcore/evaluations/*:*"
+      ]
+    },
+    {
+      "Sid": "OnlineEvaluationRunsBatchJobs",
+      "Effect": "Allow",
+      "Action": ["bedrock-agentcore:GetOnlineEvaluationConfig", "bedrock-agentcore:StartBatchEvaluation"],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:{{REGION}}:{{ACCOUNT}}:online-evaluation-config/*",
+        "arn:aws:bedrock-agentcore:{{REGION}}:{{ACCOUNT}}:batch-evaluate/*"
+      ]
+    },
+    {
+      "Sid": "JudgeModels",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": [
+        "arn:aws:bedrock:*::foundation-model/*",
+        "arn:aws:bedrock:*:{{ACCOUNT}}:inference-profile/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>jozi-evals</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.57.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jozi.TravelAgent\Jozi.TravelAgent.csproj" />
+    <Compile Include="..\Shared\ScoreRendering.cs" Link="Shared\ScoreRendering.cs" />
+  </ItemGroup>
+
+</Project>

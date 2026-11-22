@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+artifacts/
+eval-report.md
+
+# Personal recording notes (not published)
+RECORDING-SCRIPT.md

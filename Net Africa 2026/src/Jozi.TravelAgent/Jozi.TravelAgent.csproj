@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.BedrockRuntime" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AgentCore.Evaluations.Otel\AgentCore.Evaluations.Otel.csproj" />
+  </ItemGroup>
+
+</Project>
