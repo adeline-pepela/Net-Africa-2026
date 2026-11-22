@@ -65,6 +65,8 @@ dotnet build
 dotnet run --project src/Jozi.TravelAgent.Chat
 ```
 
+
+
 1. Ask: `What's the weather in Johannesburg on 2026-11-20? Do I need an umbrella?`
    You'll see `tools → get_weather_forecast` and an answer quoting 27°C / 15°C, thunderstorms.
 2. Ask a follow-up: `And how much is 1500 dollars in rand?`
