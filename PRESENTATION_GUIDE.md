@@ -333,7 +333,6 @@ dotnet run --project src/Jozi.TravelAgent.Evals -- drift --results-log-group <lo
 
 ---
 
-## Gotchas to Mention on Stage
 
 1. **Scope name** — must start with `opentelemetry.instrumentation.` or evaluations silently ignore your spans
 2. **`aws.service.type = "gen_ai_agent"`** — required for online evaluation to discover sessions; ADOT sets it automatically, plain .NET does not
