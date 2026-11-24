@@ -3,7 +3,7 @@
 
 ---
 
-## The Big Idea (30 seconds)
+## The Big Idea 
 
 You've built an AI agent. It answers questions, calls tools, sounds confident. How do you know it's actually correct?
 
