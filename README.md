@@ -125,6 +125,7 @@ cp config/variants/agent.regressed.json config/agent.json
 git commit -am "Reduce latency: prefer model knowledge over tool calls"
 git push -u origin perf/reduce-tool-calls
 gh pr create --fill
+git switch main
 ```
 
 The **Agent quality gate** check runs (~3–4 min with restore and build) and goes red. A sticky comment shows the

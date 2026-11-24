@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # DEMO 3 setup — continuous quality monitoring of production traffic.
 #
-# Creates (idempotently):
+# Creates (idempotently): to do something in a way that produces the same result whether it is performed once or multiple times
 #   1. the CloudWatch log group the agent writes spans to
 #   2. an IAM execution role that AgentCore Evaluations assumes to read spans and write results
 #   3. an online evaluation config: 100% sampling, built-in evaluators, 1-minute session timeout (demo-friendly)
